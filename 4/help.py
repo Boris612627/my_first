@@ -18,10 +18,10 @@ class MCP4725:
         if not (0 <= number <= 4095):
             print("Число выходит за разрядность MCP4725 (12 бит)")
         
-        first_byte = (number >> 4) & 0xFF  # Старшие 8 бит (включая конфигурационные биты)
-        second_byte = ((number & 0xF) << 4) | 0x00  # Младшие 4 бита + заполнение нулями
+        first_byte = (number >> 4) & 0xFF 
+        second_byte = ((number & 0xF) << 4) | 0x00  
         
-        self.bus.write_i2c_block_data(self.address, 0x40, [first_byte, second_byte])  # Команда быстрой записи
+        self.bus.write_i2c_block_data(self.address, 0x40, [first_byte, second_byte]) 
         
         if self.verbose:
             print(f"Число: {number}, отправленые по I2C данные: [0x{(self.address<<1):02X}, 0x{first_byte:02X}, 0x{second_byte:02X}]")
@@ -30,7 +30,7 @@ class MCP4725:
         if not (0.0 <= voltage <= self.dynamic_range):
             print(f"Напряжение выходит за динамический диапазон ЦАП (0.00 - {self.dynamic_range:.2f} V)")
             voltage = 0.0
-        self.set_number(int(voltage / self.dynamic_range * 4095))  # Правильно масштабируем до 12 бит
+        self.set_number(int(voltage / self.dynamic_range * 4095)) 
 
 if __name__ == "__main__":
     try:

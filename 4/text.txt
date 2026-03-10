@@ -1,0 +1,9 @@
+Введите напряжение в Вольтах: 2
+Traceback (most recent call last):
+  File "/home/b04-504/Boris/my_first/4/help.py", line 42, in <module>
+    dac.set_voltage(voltage)
+  File "/home/b04-504/Boris/my_first/4/help.py", line 33, in set_voltage
+    self.set_number(int(voltage / self.dynamic_range * 4095)) 
+  File "/home/b04-504/Boris/my_first/4/help.py", line 24, in set_number
+    self.bus.write_i2c_block_data(self.address, 0x40, [first_byte, second_byte]) 
+TimeoutError: [Errno 110] Connection timed out
