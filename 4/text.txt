@@ -7,3 +7,11 @@ Traceback (most recent call last):
   File "/home/b04-504/Boris/my_first/4/help.py", line 24, in set_number
     self.bus.write_i2c_block_data(self.address, 0x40, [first_byte, second_byte]) 
 TimeoutError: [Errno 110] Connection timed out
+
+b04-504@raspberrypi:~/Boris/my_first $ i2cdetect
+Error: No i2c-bus specified!
+Usage: i2cdetect [-y] [-a] [-q|-r] I2CBUS [FIRST LAST]
+       i2cdetect -F I2CBUS
+       i2cdetect -l
+  I2CBUS is an integer or an I2C bus name
+  If provided, FIRST and LAST limit the probing range.
