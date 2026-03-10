@@ -10,6 +10,7 @@ sampling_frequency = 1000
 try:
     pwm = pwm.PWM_DAC(12, something, amplitude, True)
     t = 0.0
+    pwm.pwm.start(0)
     while True:
         v = amplitude * (sg.get_sin_wave_amplitude(signal_frequency, t))
         pwm.set_voltage(v)
