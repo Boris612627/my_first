@@ -1,5 +1,6 @@
 import RPi.GPIO as gpio
 import time
+
 class R2R_ADC:
     def __init__(self, dynamic_range, compare_time=0.01, verbose=False):
         self.dynamic_range = dynamic_range
@@ -20,23 +21,24 @@ class R2R_ADC:
     def number_to_dac(self, number):
         for i, pin in enumerate(self.bits_gpio):
             bit_value = (number >> (7 - i)) & 1
-            gpio.output(pin, gpio.HIGH if bit_value else gpio.LOW)
+            gpio.output(pin, bit_value)  
+    
     def sequential_counting_adc(self):
         for code in range(256):
             self.number_to_dac(code)
             
             time.sleep(self.compare_time)
+            
+            if gpio.input(self.comp_gpio) == gpio.HIGH:
+                return code
         return 255
+    
     def get_sc_voltage(self):
         code = self.sequential_counting_adc()
         voltage = (code / 255.0) * self.dynamic_range
         return voltage
-
-    
-# Основной охранник
 if __name__ == "__main__":
-    
-    DYNAMIC_RANGE = 2
+    DYNAMIC_RANGE = 3.1 
     
     adc = None
     
@@ -45,12 +47,11 @@ if __name__ == "__main__":
         
         while True:
             voltage = adc.get_sc_voltage()
-            print(f"U = {voltage:.3f} В")
-            
+            print(f"Напряжение: {voltage:.3f} В")
             time.sleep(0.5)
+            
     finally:
-        adc.deinit()
         if adc:
-            adc.cleanup()
+            adc.deinit()
         else:
             gpio.cleanup()
