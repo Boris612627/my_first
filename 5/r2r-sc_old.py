@@ -1,12 +1,11 @@
 import time
 from r2r_adc import R2R_ADC
-from adc_plot import plot_voltage_vs_time, plot_sampling_period_hist
+from adc_plot import plot_voltage_vs_time
 
 def main():
     DYNAMIC_RANGE = 3.3      
     COMPARE_TIME = 0.0001   
     DURATION = 3.0
-    
     voltage_values = []
     time_values = []
     
@@ -25,14 +24,11 @@ def main():
             
             time_values.append(current_time)
             voltage_values.append(voltage)
-            
             if current_time - last_print >= 0.5:
                 print(f"Время: {current_time:.2f} с, U = {voltage:.3f} В")
                 last_print = current_time
         
         plot_voltage_vs_time(time_values, voltage_values, DYNAMIC_RANGE)
-        plot_sampling_period_hist(time_values)
-        
     finally:
         if adc:
             adc.deinit()
