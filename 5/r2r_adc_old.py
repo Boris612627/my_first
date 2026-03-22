@@ -21,12 +21,14 @@ class R2R_ADC:
     def number_to_dac(self, number):
         for i, pin in enumerate(self.bits_gpio):
             bit_value = (number >> (7 - i)) & 1
-            gpio.output(pin, bit_value)
+            gpio.output(pin, bit_value)  
     
     def sequential_counting_adc(self):
         for code in range(256):
             self.number_to_dac(code)
+            
             time.sleep(self.compare_time)
+            
             if gpio.input(self.comp_gpio) == gpio.HIGH:
                 return code
         return 255
@@ -35,24 +37,6 @@ class R2R_ADC:
         code = self.sequential_counting_adc()
         voltage = (code / 255.0) * self.dynamic_range
         return voltage
-    
-    def successive_approximation_adc(self):
-        code = 0
-        for bit in range(7, -1, -1):
-            test_code = code | (1 << bit)
-            self.number_to_dac(test_code)
-            time.sleep(self.compare_time)
-            
-            if gpio.input(self.comp_gpio) == gpio.LOW:
-                code = test_code
-        
-        return code
-    
-    def get_sar_voltage(self):
-        code = self.successive_approximation_adc()
-        voltage = (code / 255.0) * self.dynamic_range
-        return voltage
-
 if __name__ == "__main__":
     DYNAMIC_RANGE = 3.1 
     
@@ -62,7 +46,7 @@ if __name__ == "__main__":
         adc = R2R_ADC(DYNAMIC_RANGE, compare_time=0.01, verbose=False)
         
         while True:
-            voltage = adc.get_sar_voltage()
+            voltage = adc.get_sc_voltage()
             print(f"Напряжение: {voltage:.3f} В")
             time.sleep(0.5)
             
